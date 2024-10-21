@@ -1,15 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
-import os
+from langchain.text_splitter import CharacterTextSplitter
 from src.Log import logger
-from src.constants import CONFIG_FILEPATH
 
 
 class TextExtractor:
-    def __init__(self, url, output_file):
+    def __init__(self, url, output_file="output" ):
         self.url  = url
         self.output_file = output_file
-    
     def extract_entire_content(self):
         """
         Returns the extractd text as a text file
@@ -41,21 +39,6 @@ class TextExtractor:
                 logger.info(f"---- Failed to retrieve the webpage. Status code: {response.status_code} ----")
         except Exception as e:
             logger.error(f"----An error occurred: {e}----")
-
-# # URL of the website to scrape
-# url = "https://brainlox.com/courses/category/technical"
-# url2= "https://brainlox.com/courses/4f629d96-5ed9-4302-ae0e-3479c543a49e"
-
-
-# # File to save the extracted content
-# output_file = "website_content.txt"
-
-# # Call the function to extract and save the content
-# p = TextExtractor(url, output_file)
-# p.extract_entire_content()
-
-
+        return entire_content
 if __name__ == "__main__":
-    print(CONFIG_FILEPATH)
-
-
+    pass

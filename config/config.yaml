@@ -1,1 +1,3 @@
-url=""
+content:
+  url: https://brainlox.com/courses/category/technical
+  output_file: website_content.txt

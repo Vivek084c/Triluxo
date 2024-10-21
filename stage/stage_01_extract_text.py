@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+import os
 from src.Log import logger
+from src.constants import CONFIG_FILEPATH
 
 
 class TextExtractor:
@@ -54,6 +56,6 @@ class TextExtractor:
 
 
 if __name__ == "__main__":
-    pass
+    print(CONFIG_FILEPATH)
 
 

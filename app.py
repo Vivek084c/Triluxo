@@ -21,8 +21,6 @@ def run():
     # Get the 'url' key from the JSON data
     url = data.get('url') if data else None
     output_file = data.get("output_file") if data else None
-    # url = "https://brainlox.com/courses/category/technical"
-    # output_file="output.txt"
     
     # Check if a URL was provided
     if url:
@@ -50,7 +48,7 @@ def getChat():
         content = retriver.invoke(question)
     else:
         return jsonify({"error":"No build for Embeding vector space found"})
-    return jsonify({"retriver content":f">>. {content} <<"})
+    return jsonify({"content":f">>. {content} <<"})
 
 
 # Run the Flask app

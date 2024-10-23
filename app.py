@@ -4,26 +4,25 @@ from flask import Flask, request, jsonify
 from flask import Flask, jsonify
 from src.Log import logger
 import os
-import dill as pickle
-import requests
-from pinecone import Pinecone, ServerlessSpec
-c = ""
+
 
 # Create a Flask app instance
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def greet():
-    return jsonify({"hellow":f"greate to meet you,"})
+    return jsonify({"hellow":f"api is running"})
 
 # Define the route /run
-@app.route('/build_chat', methods=['GET'])
+@app.route('/donwload_save', methods=['GET'])
 def run():
     data = request.get_json()
     
     # Get the 'url' key from the JSON data
     url = data.get('url') if data else None
     output_file = data.get("output_file") if data else None
+    # url = "https://brainlox.com/courses/category/technical"
+    # output_file="output.txt"
     
     # Check if a URL was provided
     if url:
@@ -33,27 +32,25 @@ def run():
         logger.info(">>>>>> Compleated TextExtractor Process <<<<<<")
     else:
         logger.error("Url does not exist")
+    return jsonify({"done":"build_chat"})
     
-    
-
-@app.route("/test1", methods=['GET'])
+@app.route("/embed_save_db", methods=['GET'])
 def connect_database():
     obj =Embeding_DB(index_name="triluxo", api_key=os.getenv("PINECONE"),filename="output.txt" )
     print("created the object >>>>>>>>>>>>>>>")
     global retriver
     retriver = obj.Embed_Save()
-    return jsonify({"vivek":"sonal"})
+    return jsonify({"done":"Emeding and storing in pineconeDB"})
 
-@app.route("/get_chat", methods=['GET'])
+@app.route("/get_response", methods=['GET'])
 def getChat():
-    # data = requests.get('http://127.0.0.1:5000/get_retriever')
-
-    content = retriver.invoke("7 LessonsView Details$22per sessionThe AI Writer")
-    print("the content of the retriver file are : ")
-    return jsonify({"retriver content":f">>. {content}"})
-
-
-
+    data = request.get_json()
+    question = data.get("question")
+    if retriver:
+        content = retriver.invoke(question)
+    else:
+        return jsonify({"error":"No build for Embeding vector space found"})
+    return jsonify({"retriver content":f">>. {content} <<"})
 
 
 # Run the Flask app

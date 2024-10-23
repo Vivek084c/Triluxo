@@ -4,7 +4,8 @@ from flask import Flask, request, jsonify
 from flask import Flask, jsonify
 from src.Log import logger
 import os
-import pickle
+import dill as pickle
+import requests
 from pinecone import Pinecone, ServerlessSpec
 c = ""
 
@@ -18,24 +19,6 @@ def greet():
 # Define the route /run
 @app.route('/build_chat', methods=['GET'])
 def run():
-    # # Get JSON data from the request
-    # data = request.get_json()
-    
-    # # Get the 'url' key from the JSON data
-    # url = data.get('url') if data else None
-    # output_file = data.get("output_file") if data else None
-    
-    # # Check if a URL was provided
-    # if url:
-    #     text = TextExtractor(url,output_file)
-    #     logger.info(">>>>>> Created TextExtractor Object <<<<<<")
-    #     c = text.extract_entire_content()
-    #     logger.info(">>>>>> Compleated TextExtractor Process <<<<<<")
-    #     return jsonify({"message": f"URL received and processed: {url} "})
-    # else:
-    #     return jsonify({"error": "No URL provided"}), 400
-
-       # Get JSON data from the request
     data = request.get_json()
     
     # Get the 'url' key from the JSON data
@@ -50,35 +33,23 @@ def run():
         logger.info(">>>>>> Compleated TextExtractor Process <<<<<<")
     else:
         logger.error("Url does not exist")
-
-    #performing embeding and storing in pinecode vector store:
-    # 1)defining the index
-    index = "triluxo"
-    # getting the api key
-    api_key = os.getenv("PINECONE")
     
     
 
 @app.route("/test1", methods=['GET'])
 def connect_database():
-    obj =Embeding_DB()
+    obj =Embeding_DB(index_name="triluxo", api_key=os.getenv("PINECONE"),filename="output.txt" )
     print("created the object >>>>>>>>>>>>>>>")
+    global retriver
     retriver = obj.Embed_Save()
-    with open('retriever.pkl', 'wb') as f:
-        pickle.dump(retriver, f)
-
-    return jsonify({"retriver object serialised":f"{retriver}"})
+    return jsonify({"vivek":"sonal"})
 
 @app.route("/get_chat", methods=['GET'])
-def getCaht():
-    pickle_file = 'retriever.pkl'  # Replace with the actual pickle file path
+def getChat():
+    # data = requests.get('http://127.0.0.1:5000/get_retriever')
 
-    # Open the pickle file in 'rb' mode (read binary)
-    with open(pickle_file, 'rb') as f:
-        # Load the object from the pickle file
-        data = pickle.load(f)
+    content = retriver.invoke("7 LessonsView Details$22per sessionThe AI Writer")
     print("the content of the retriver file are : ")
-    content = data.invoke("7 LessonsView Details$22per sessionThe AI Writer")
     return jsonify({"retriver content":f">>. {content}"})
 
 

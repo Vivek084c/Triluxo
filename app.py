@@ -1,7 +1,7 @@
 from utils.extractText import TextExtractor
 from flask import Flask, request, jsonify
 from flask import Flask, jsonify
-
+from src.Log import logger
 c = ""
 
 # Create a Flask app instance
@@ -20,10 +20,17 @@ def run():
     # Check if a URL was provided
     if url:
         text = TextExtractor(url,output_file)
-        content = text.extract_entire_content()
+        logger.info(">>>>>> Created TextExtractor Object <<<<<<")
+        c = text.extract_entire_content()
+        logger.info(">>>>>> Compleated TextExtractor Process <<<<<<")
         return jsonify({"message": f"URL received and processed: {url} "})
     else:
         return jsonify({"error": "No URL provided"}), 400
+    
+
+@app.route("/")
+
+
 
 # Run the Flask app
 if __name__ == '__main__':
